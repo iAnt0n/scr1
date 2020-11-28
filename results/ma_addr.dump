@@ -1,0 +1,431 @@
+
+/home/anton/scr1/build/verilator_AHB_MAX_imc_IPIC_1_TCM_1_VIRQ_1_TRACE_1/ma_addr.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text.init:
+
+00000000 <SIM_EXIT-0xf4>:
+	...
+
+000000f4 <SIM_EXIT>:
+  f4:	00000013          	nop
+
+000000f8 <SIM_STOP>:
+  f8:	0000006f          	j	f8 <SIM_STOP>
+  fc:	ffff                	0xffff
+  fe:	ffff                	0xffff
+	...
+
+00000400 <trap_vector>:
+ 400:	34202e73          	csrr	t3,mcause
+ 404:	4e99                	li	t4,6
+ 406:	03de1063          	bne	t3,t4,426 <vector_logic>
+ 40a:	00001e17          	auipc	t3,0x1
+ 40e:	a96e0e13          	addi	t3,t3,-1386 # ea0 <output_string>
+ 412:	f0000eb7          	lui	t4,0xf0000
+
+00000416 <print_loop>:
+ 416:	000e0f03          	lb	t5,0(t3)
+ 41a:	000f0663          	beqz	t5,426 <vector_logic>
+ 41e:	01ee8023          	sb	t5,0(t4) # f0000000 <__global_pointer$+0xefffe7b8>
+ 422:	0e05                	addi	t3,t3,1
+ 424:	bfcd                	j	416 <print_loop>
+
+00000426 <vector_logic>:
+ 426:	34202773          	csrr	a4,mcause
+ 42a:	47a1                	li	a5,8
+ 42c:	02f70463          	beq	a4,a5,454 <_report>
+ 430:	47a5                	li	a5,9
+ 432:	02f70163          	beq	a4,a5,454 <_report>
+ 436:	47ad                	li	a5,11
+ 438:	00f70e63          	beq	a4,a5,454 <_report>
+ 43c:	00001717          	auipc	a4,0x1
+ 440:	9ec70713          	addi	a4,a4,-1556 # e28 <mtvec_handler>
+ 444:	c311                	beqz	a4,448 <vector_logic+0x22>
+ 446:	8702                	jr	a4
+ 448:	34202773          	csrr	a4,mcause
+ 44c:	00075363          	bgez	a4,452 <handle_exception>
+ 450:	a009                	j	452 <handle_exception>
+
+00000452 <handle_exception>:
+ 452:	4505                	li	a0,1
+
+00000454 <_report>:
+ 454:	20d0006f          	j	e60 <sc_exit>
+ 458:	00000013          	nop
+ 45c:	00000013          	nop
+ 460:	00000013          	nop
+ 464:	00000013          	nop
+ 468:	00000013          	nop
+ 46c:	00000013          	nop
+ 470:	00000013          	nop
+ 474:	00000013          	nop
+ 478:	00000013          	nop
+ 47c:	00000013          	nop
+	...
+
+Disassembly of section .text.reset:
+
+00000c00 <_start>:
+ c00:	f1402573          	csrr	a0,mhartid
+ c04:	e101                	bnez	a0,c04 <_start+0x4>
+ c06:	4e01                	li	t3,0
+ c08:	fffff297          	auipc	t0,0xfffff
+ c0c:	7f828293          	addi	t0,t0,2040 # 400 <STACK_SIZE>
+ c10:	30529073          	csrw	mtvec,t0
+ c14:	4505                	li	a0,1
+ c16:	057e                	slli	a0,a0,0x1f
+ c18:	00054863          	bltz	a0,c28 <_start+0x28>
+ c1c:	0ff0000f          	fence
+ c20:	85f2                	mv	a1,t3
+ c22:	4501                	li	a0,0
+ c24:	00000073          	ecall
+ c28:	00000293          	li	t0,0
+ c2c:	00028f63          	beqz	t0,c4a <_start+0x4a>
+ c30:	10529073          	csrw	stvec,t0
+ c34:	62ad                	lui	t0,0xb
+ c36:	10928293          	addi	t0,t0,265 # b109 <__global_pointer$+0x98c1>
+ c3a:	30229073          	csrw	medeleg,t0
+ c3e:	30202373          	csrr	t1,medeleg
+ c42:	00628463          	beq	t0,t1,c4a <_start+0x4a>
+ c46:	80dff06f          	j	452 <handle_exception>
+ c4a:	30005073          	csrwi	mstatus,0
+ c4e:	6509                	lui	a0,0x2
+ c50:	80050513          	addi	a0,a0,-2048 # 1800 <_end+0x7a0>
+ c54:	30052073          	csrs	mstatus,a0
+ c58:	00000297          	auipc	t0,0x0
+ c5c:	02828293          	addi	t0,t0,40 # c80 <_run_test>
+ c60:	34129073          	csrw	mepc,t0
+ c64:	f1402573          	csrr	a0,mhartid
+ c68:	30200073          	mret
+
+Disassembly of section .text:
+
+00000c80 <_run_test>:
+ c80:	00000417          	auipc	s0,0x0
+ c84:	25040413          	addi	s0,s0,592 # ed0 <begin_signature>
+ c88:	00400493          	li	s1,4
+ c8c:	00200e13          	li	t3,2
+ c90:	00000397          	auipc	t2,0x0
+ c94:	01c38393          	addi	t2,t2,28 # cac <_run_test+0x2c>
+ c98:	00140313          	addi	t1,s0,1
+ c9c:	00141303          	lh	t1,1(s0)
+ ca0:	ffffc3b7          	lui	t2,0xffffc
+ ca4:	bcc38393          	addi	t2,t2,-1076 # ffffbbcc <__global_pointer$+0xffffa384>
+ ca8:	14731e63          	bne	t1,t2,e04 <fail>
+ cac:	00300e13          	li	t3,3
+ cb0:	00000397          	auipc	t2,0x0
+ cb4:	01c38393          	addi	t2,t2,28 # ccc <_run_test+0x4c>
+ cb8:	00140313          	addi	t1,s0,1
+ cbc:	00145303          	lhu	t1,1(s0)
+ cc0:	0000c3b7          	lui	t2,0xc
+ cc4:	bcc38393          	addi	t2,t2,-1076 # bbcc <__global_pointer$+0xa384>
+ cc8:	12731e63          	bne	t1,t2,e04 <fail>
+ ccc:	00400e13          	li	t3,4
+ cd0:	00000397          	auipc	t2,0x0
+ cd4:	01c38393          	addi	t2,t2,28 # cec <_run_test+0x6c>
+ cd8:	00140313          	addi	t1,s0,1
+ cdc:	00142303          	lw	t1,1(s0)
+ ce0:	99aac3b7          	lui	t2,0x99aac
+ ce4:	bcc38393          	addi	t2,t2,-1076 # 99aabbcc <__global_pointer$+0x99aaa384>
+ ce8:	10731e63          	bne	t1,t2,e04 <fail>
+ cec:	00500e13          	li	t3,5
+ cf0:	00000397          	auipc	t2,0x0
+ cf4:	01c38393          	addi	t2,t2,28 # d0c <_run_test+0x8c>
+ cf8:	00240313          	addi	t1,s0,2
+ cfc:	00242303          	lw	t1,2(s0)
+ d00:	8899b3b7          	lui	t2,0x8899b
+ d04:	abb38393          	addi	t2,t2,-1349 # 8899aabb <__global_pointer$+0x88999273>
+ d08:	0e731e63          	bne	t1,t2,e04 <fail>
+ d0c:	00600e13          	li	t3,6
+ d10:	00000397          	auipc	t2,0x0
+ d14:	01c38393          	addi	t2,t2,28 # d2c <_run_test+0xac>
+ d18:	00340313          	addi	t1,s0,3
+ d1c:	00342303          	lw	t1,3(s0)
+ d20:	7788a3b7          	lui	t2,0x7788a
+ d24:	9aa38393          	addi	t2,t2,-1622 # 778899aa <__global_pointer$+0x77888162>
+ d28:	0c731e63          	bne	t1,t2,e04 <fail>
+ d2c:	00600493          	li	s1,6
+ d30:	01600e13          	li	t3,22
+ d34:	00000397          	auipc	t2,0x0
+ d38:	03038393          	addi	t2,t2,48 # d64 <_run_test+0xe4>
+ d3c:	00140313          	addi	t1,s0,1
+ d40:	000410a3          	sh	zero,1(s0)
+ d44:	00040303          	lb	t1,0(s0)
+ d48:	0a030e63          	beqz	t1,e04 <fail>
+ d4c:	00340303          	lb	t1,3(s0)
+ d50:	0a030a63          	beqz	t1,e04 <fail>
+ d54:	00140303          	lb	t1,1(s0)
+ d58:	0a031663          	bnez	t1,e04 <fail>
+ d5c:	00240303          	lb	t1,2(s0)
+ d60:	0a031263          	bnez	t1,e04 <fail>
+ d64:	01700e13          	li	t3,23
+ d68:	00000397          	auipc	t2,0x0
+ d6c:	03038393          	addi	t2,t2,48 # d98 <_run_test+0x118>
+ d70:	00540313          	addi	t1,s0,5
+ d74:	000422a3          	sw	zero,5(s0)
+ d78:	00440303          	lb	t1,4(s0)
+ d7c:	08030463          	beqz	t1,e04 <fail>
+ d80:	00940303          	lb	t1,9(s0)
+ d84:	08030063          	beqz	t1,e04 <fail>
+ d88:	00540303          	lb	t1,5(s0)
+ d8c:	06031c63          	bnez	t1,e04 <fail>
+ d90:	00840303          	lb	t1,8(s0)
+ d94:	06031863          	bnez	t1,e04 <fail>
+ d98:	01800e13          	li	t3,24
+ d9c:	00000397          	auipc	t2,0x0
+ da0:	03038393          	addi	t2,t2,48 # dcc <_run_test+0x14c>
+ da4:	00a40313          	addi	t1,s0,10
+ da8:	00042523          	sw	zero,10(s0)
+ dac:	00940303          	lb	t1,9(s0)
+ db0:	04030a63          	beqz	t1,e04 <fail>
+ db4:	00e40303          	lb	t1,14(s0)
+ db8:	04030663          	beqz	t1,e04 <fail>
+ dbc:	00a40303          	lb	t1,10(s0)
+ dc0:	04031263          	bnez	t1,e04 <fail>
+ dc4:	00d40303          	lb	t1,13(s0)
+ dc8:	02031e63          	bnez	t1,e04 <fail>
+ dcc:	01900e13          	li	t3,25
+ dd0:	00000397          	auipc	t2,0x0
+ dd4:	03038393          	addi	t2,t2,48 # e00 <_run_test+0x180>
+ dd8:	00f40313          	addi	t1,s0,15
+ ddc:	000427a3          	sw	zero,15(s0)
+ de0:	00e40303          	lb	t1,14(s0)
+ de4:	02030063          	beqz	t1,e04 <fail>
+ de8:	01340303          	lb	t1,19(s0)
+ dec:	00030c63          	beqz	t1,e04 <fail>
+ df0:	00f40303          	lb	t1,15(s0)
+ df4:	00031863          	bnez	t1,e04 <fail>
+ df8:	01240303          	lb	t1,18(s0)
+ dfc:	00031463          	bnez	t1,e04 <fail>
+ e00:	01c01a63          	bne	zero,t3,e14 <pass>
+
+00000e04 <fail>:
+ e04:	0ff0000f          	fence
+ e08:	000e0593          	mv	a1,t3
+ e0c:	00100513          	li	a0,1
+ e10:	00000073          	ecall
+
+00000e14 <pass>:
+ e14:	0ff0000f          	fence
+ e18:	000e0593          	mv	a1,t3
+ e1c:	00000513          	li	a0,0
+ e20:	00000073          	ecall
+ e24:	00000013          	nop
+
+00000e28 <mtvec_handler>:
+ e28:	342022f3          	csrr	t0,mcause
+ e2c:	fc929ce3          	bne	t0,s1,e04 <fail>
+ e30:	343022f3          	csrr	t0,mtval
+ e34:	fc6298e3          	bne	t0,t1,e04 <fail>
+ e38:	00028283          	lb	t0,0(t0)
+ e3c:	fc0284e3          	beqz	t0,e04 <fail>
+ e40:	34139073          	csrw	mepc,t2
+ e44:	30200073          	mret
+
+00000e48 <ecall>:
+ e48:	00000073          	ecall
+	...
+
+00000e60 <sc_exit>:
+ e60:	fffff297          	auipc	t0,0xfffff
+ e64:	29428293          	addi	t0,t0,660 # f4 <SIM_EXIT>
+ e68:	8282                	jr	t0
+ e6a:	00000013          	nop
+ e6e:	00000013          	nop
+ e72:	00000013          	nop
+ e76:	00000013          	nop
+ e7a:	00000013          	nop
+ e7e:	0001                	nop
+	...
+
+Disassembly of section .data:
+
+00000ea0 <output_string>:
+ ea0:	726f7473          	csrrci	s0,0x726,30
+ ea4:	5f65                	li	t5,-7
+ ea6:	616d                	addi	sp,sp,240
+ ea8:	000a                	c.slli	zero,0x2
+ eaa:	0000                	unimp
+ eac:	0000                	unimp
+	...
+
+00000eb0 <begin_regstate>:
+	...
+
+00000ed0 <begin_signature>:
+ ed0:	ccdd                	beqz	s1,f8e <begin_signature+0xbe>
+ ed2:	8899aabb          	0x8899aabb
+ ed6:	44556677          	0x44556677
+ eda:	ee112233          	0xee112233
+ ede:	eeff                	0xeeff
+ ee0:	5050                	lw	a2,36(s0)
+ ee2:	5050                	lw	a2,36(s0)
+ ee4:	5050                	lw	a2,36(s0)
+ ee6:	5050                	lw	a2,36(s0)
+ ee8:	5050                	lw	a2,36(s0)
+ eea:	5050                	lw	a2,36(s0)
+ eec:	5050                	lw	a2,36(s0)
+ eee:	5050                	lw	a2,36(s0)
+ ef0:	5050                	lw	a2,36(s0)
+ ef2:	5050                	lw	a2,36(s0)
+ ef4:	5050                	lw	a2,36(s0)
+ ef6:	5050                	lw	a2,36(s0)
+ ef8:	5050                	lw	a2,36(s0)
+ efa:	5050                	lw	a2,36(s0)
+ efc:	5050                	lw	a2,36(s0)
+ efe:	5050                	lw	a2,36(s0)
+ f00:	5050                	lw	a2,36(s0)
+ f02:	5050                	lw	a2,36(s0)
+ f04:	5050                	lw	a2,36(s0)
+ f06:	5050                	lw	a2,36(s0)
+ f08:	5050                	lw	a2,36(s0)
+ f0a:	5050                	lw	a2,36(s0)
+ f0c:	5050                	lw	a2,36(s0)
+ f0e:	5050                	lw	a2,36(s0)
+ f10:	5050                	lw	a2,36(s0)
+ f12:	5050                	lw	a2,36(s0)
+ f14:	5050                	lw	a2,36(s0)
+ f16:	5050                	lw	a2,36(s0)
+ f18:	5050                	lw	a2,36(s0)
+ f1a:	5050                	lw	a2,36(s0)
+ f1c:	5050                	lw	a2,36(s0)
+ f1e:	5050                	lw	a2,36(s0)
+ f20:	5050                	lw	a2,36(s0)
+ f22:	5050                	lw	a2,36(s0)
+ f24:	5050                	lw	a2,36(s0)
+ f26:	5050                	lw	a2,36(s0)
+ f28:	5050                	lw	a2,36(s0)
+ f2a:	5050                	lw	a2,36(s0)
+ f2c:	5050                	lw	a2,36(s0)
+ f2e:	5050                	lw	a2,36(s0)
+ f30:	5050                	lw	a2,36(s0)
+ f32:	5050                	lw	a2,36(s0)
+ f34:	5050                	lw	a2,36(s0)
+ f36:	5050                	lw	a2,36(s0)
+ f38:	5050                	lw	a2,36(s0)
+ f3a:	5050                	lw	a2,36(s0)
+ f3c:	5050                	lw	a2,36(s0)
+ f3e:	5050                	lw	a2,36(s0)
+ f40:	5050                	lw	a2,36(s0)
+ f42:	5050                	lw	a2,36(s0)
+ f44:	5050                	lw	a2,36(s0)
+ f46:	5050                	lw	a2,36(s0)
+ f48:	5050                	lw	a2,36(s0)
+ f4a:	5050                	lw	a2,36(s0)
+ f4c:	5050                	lw	a2,36(s0)
+ f4e:	5050                	lw	a2,36(s0)
+ f50:	5050                	lw	a2,36(s0)
+ f52:	5050                	lw	a2,36(s0)
+ f54:	5050                	lw	a2,36(s0)
+ f56:	5050                	lw	a2,36(s0)
+ f58:	5050                	lw	a2,36(s0)
+ f5a:	5050                	lw	a2,36(s0)
+ f5c:	5050                	lw	a2,36(s0)
+ f5e:	5050                	lw	a2,36(s0)
+ f60:	5050                	lw	a2,36(s0)
+ f62:	5050                	lw	a2,36(s0)
+ f64:	5050                	lw	a2,36(s0)
+ f66:	5050                	lw	a2,36(s0)
+ f68:	5050                	lw	a2,36(s0)
+ f6a:	5050                	lw	a2,36(s0)
+ f6c:	5050                	lw	a2,36(s0)
+ f6e:	5050                	lw	a2,36(s0)
+ f70:	5050                	lw	a2,36(s0)
+ f72:	5050                	lw	a2,36(s0)
+ f74:	5050                	lw	a2,36(s0)
+ f76:	5050                	lw	a2,36(s0)
+ f78:	5050                	lw	a2,36(s0)
+ f7a:	5050                	lw	a2,36(s0)
+ f7c:	5050                	lw	a2,36(s0)
+ f7e:	5050                	lw	a2,36(s0)
+ f80:	5050                	lw	a2,36(s0)
+ f82:	5050                	lw	a2,36(s0)
+ f84:	5050                	lw	a2,36(s0)
+ f86:	5050                	lw	a2,36(s0)
+ f88:	5050                	lw	a2,36(s0)
+ f8a:	5050                	lw	a2,36(s0)
+ f8c:	5050                	lw	a2,36(s0)
+ f8e:	5050                	lw	a2,36(s0)
+ f90:	5050                	lw	a2,36(s0)
+ f92:	5050                	lw	a2,36(s0)
+ f94:	5050                	lw	a2,36(s0)
+ f96:	5050                	lw	a2,36(s0)
+ f98:	5050                	lw	a2,36(s0)
+ f9a:	5050                	lw	a2,36(s0)
+ f9c:	5050                	lw	a2,36(s0)
+ f9e:	5050                	lw	a2,36(s0)
+ fa0:	5050                	lw	a2,36(s0)
+ fa2:	5050                	lw	a2,36(s0)
+ fa4:	5050                	lw	a2,36(s0)
+ fa6:	5050                	lw	a2,36(s0)
+ fa8:	5050                	lw	a2,36(s0)
+ faa:	5050                	lw	a2,36(s0)
+ fac:	5050                	lw	a2,36(s0)
+ fae:	5050                	lw	a2,36(s0)
+ fb0:	5050                	lw	a2,36(s0)
+ fb2:	5050                	lw	a2,36(s0)
+ fb4:	5050                	lw	a2,36(s0)
+ fb6:	5050                	lw	a2,36(s0)
+ fb8:	5050                	lw	a2,36(s0)
+ fba:	5050                	lw	a2,36(s0)
+ fbc:	5050                	lw	a2,36(s0)
+ fbe:	5050                	lw	a2,36(s0)
+ fc0:	5050                	lw	a2,36(s0)
+ fc2:	5050                	lw	a2,36(s0)
+ fc4:	5050                	lw	a2,36(s0)
+ fc6:	5050                	lw	a2,36(s0)
+ fc8:	5050                	lw	a2,36(s0)
+ fca:	5050                	lw	a2,36(s0)
+ fcc:	5050                	lw	a2,36(s0)
+ fce:	5050                	lw	a2,36(s0)
+ fd0:	5050                	lw	a2,36(s0)
+ fd2:	5050                	lw	a2,36(s0)
+ fd4:	5050                	lw	a2,36(s0)
+ fd6:	5050                	lw	a2,36(s0)
+ fd8:	5050                	lw	a2,36(s0)
+ fda:	5050                	lw	a2,36(s0)
+ fdc:	5050                	lw	a2,36(s0)
+ fde:	0050                	addi	a2,sp,4
+
+Disassembly of section .tohost:
+
+00001000 <tohost>:
+	...
+
+00001040 <fromhost>:
+	...
+
+Disassembly of section .sdata:
+
+00001048 <__global_pointer$-0x800>:
+	...
+
+Disassembly of section .stack:
+
+0000fc00 <.stack>:
+	...
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+   0:	2c41                	jal	290 <SIM_STOP+0x198>
+   2:	0000                	unimp
+   4:	7200                	flw	fs0,32(a2)
+   6:	7369                	lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <CL_SIZE-0xc>
+   c:	0022                	c.slli	zero,0x8
+   e:	0000                	unimp
+  10:	7205                	lui	tp,0xfffe1
+  12:	3376                	fld	ft6,376(sp)
+  14:	6932                	flw	fs2,12(sp)
+  16:	7032                	flw	ft0,44(sp)
+  18:	5f30                	lw	a2,120(a4)
+  1a:	326d                	jal	fffff9c4 <__global_pointer$+0xffffe17c>
+  1c:	3070                	fld	fa2,224(s0)
+  1e:	665f 7032 5f30      	0x5f307032665f
+  24:	30703263          	0x30703263
+  28:	0800                	addi	s0,sp,16
+  2a:	0a01                	addi	s4,s4,0
+  2c:	0b              	Address 0x000000000000002c is out of bounds.
+
