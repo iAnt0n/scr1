@@ -61,14 +61,14 @@
   csrw pmpaddr0, t0;                                                    \
   li t0, PMP_NAPOT | PMP_R | PMP_W | PMP_X;                             \
   csrw pmpcfg0, t0;                                                     \
-  .balign 4;                                                             \
+  .balign 4;                                                            \
 1:
 
 #define INIT_SPTBR                                                      \
   la t0, 1f;                                                            \
   csrw mtvec, t0;                                                       \
   csrwi sptbr, 0;                                                       \
-  .balign 4;                                                             \
+  .balign 4;                                                            \
 1:
 
 #define DELEGATE_NO_TRAPS
@@ -101,15 +101,33 @@
 
 #define INTERRUPT_HANDLER j other_exception /* No interrupts should occur */
 
+#define PRINT_CHAR_ADDR 0xF0000000
+#define STORE_MISALIGN_ID 6
+
 #define RVTEST_CODE_BEGIN                                               \
-        .section .text.init;                                            \
-        .org 0xC0, 0x00;                                                \
-        .balign  64;                                                    \
-        .weak stvec_handler;                                            \
+	.section .data;							\
+output_string: .string "store_ma\n";					\
+	.section .text.init;						\
+	.balign 64;				                        \
+	.weak stvec_handler;                                            \
         .weak mtvec_handler;                                            \
-trap_vector:                                                            \
-        /* test whether the test came from pass/fail */                 \
-        csrr a4, mcause;                                                \
+trap_vector:                   				                \
+	/* check if exception is store misalign */			\
+	csrr t3, mcause;						\
+	li t4, STORE_MISALIGN_ID;					\
+	bne t3, t4, vector_logic;					\
+	/* print string from task */ 					\
+	la t3, output_string;						\
+	li t4, PRINT_CHAR_ADDR;						\
+print_loop:								\
+	lb t5, 0(t3);							\
+	beqz t5, vector_logic;						\
+	sb t5, 0(t4);							\
+	addi t3, t3, 1;							\
+	j print_loop;							\
+	/* test whether the test came from pass/fail */                 \
+vector_logic:								\
+	csrr a4, mcause;                                                \
         li a5, CAUSE_USER_ECALL;                                        \
         beq a4, a5, _report;                                            \
         li a5, CAUSE_SUPERVISOR_ECALL;                                  \
@@ -132,6 +150,7 @@ other_exception:                                                        \
 _report:                                                                \
         j sc_exit;                                                      \
         .balign  64;                                                    \
+	.section .text.reset;				                \
         .globl _start;                                                  \
 _start:                                                                 \
         RISCV_MULTICORE_DISABLE;                                        \

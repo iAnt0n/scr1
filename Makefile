@@ -80,7 +80,7 @@ endif
 override ARCH=$(ARCH_tmp)
 
 # Use this parameter to enable tracelog
-TRACE ?= 0
+TRACE ?= 1
 
 ifeq ($(TRACE), 1)
     export SIM_TRACE_DEF = SCR1_TRACE_LOG_EN
@@ -94,7 +94,7 @@ SIM_BUILD_OPTS ?=
 
 # Use this parameter to set the list of tests to run
 # TARGETS = <riscv_isa, riscv_compliance, coremark, dhrystone21, hello, isr_sample>
-export TARGETS :=
+export TARGETS := 
 
 
 export ABI   ?= ilp32
@@ -157,20 +157,20 @@ ifeq (,$(findstring e,$(ARCH_lowercase)))
     TARGETS += riscv_isa
 
     # Comment this target if you don't want to run the riscv_compliance
-    TARGETS += riscv_compliance
+   #  TARGETS += riscv_compliance
 endif
 
 # Comment this target if you don't want to run the isr_sample
-TARGETS += isr_sample
+# TARGETS += isr_sample
 
 # Comment this target if you don't want to run the coremark
-TARGETS += coremark
+# TARGETS += coremark
 
 # Comment this target if you don't want to run the dhrystone
-TARGETS += dhrystone21
+# TARGETS += dhrystone21
 
 # Comment this target if you don't want to run the hello test
-TARGETS += hello
+# TARGETS += hello
 
 # Targets
 .PHONY: tests run_modelsim run_vcs run_ncsim run_verilator run_verilator_wf
