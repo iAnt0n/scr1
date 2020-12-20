@@ -100,6 +100,7 @@ always_comb begin
     idu2exu_cmd_o.csr_op      = SCR1_CSR_OP_REG;
     idu2exu_cmd_o.csr_cmd     = SCR1_CSR_CMD_NONE;
     idu2exu_cmd_o.rd_wb_sel   = SCR1_RD_WB_NONE;
+    idu2exu_cmd_o.store_upper_half  = 1'b0;   
     idu2exu_cmd_o.jump_req    = 1'b0;
     idu2exu_cmd_o.branch_req  = 1'b0;
     idu2exu_cmd_o.mret_req    = 1'b0;
@@ -207,6 +208,24 @@ always_comb begin
                         if (instr[19] | instr[24])  rve_illegal = 1'b1;
 `endif  // SCR1_RVE_EXT
                     end // SCR1_OPCODE_STORE
+
+
+	    //CUSTOM INSTR SUH	    
+                    SCR1_OPCODE_SUH_CUSTOM      : begin
+                        idu2exu_use_rs1_o         = 1'b1;
+                        idu2exu_use_rs2_o         = 1'b1;
+                        idu2exu_use_imm_o         = 1'b1;
+			idu2exu_cmd_o.store_upper_half  = 1'b1;
+                        idu2exu_cmd_o.sum2_op     = SCR1_SUM2_OP_REG_IMM;
+                        idu2exu_cmd_o.imm         = {{21{instr[31]}}, instr[30:25], instr[11:7]};
+           		case (funct3)
+                            3'b001  : idu2exu_cmd_o.lsu_cmd = SCR1_LSU_CMD_SH;
+                            default : rvi_illegal = 1'b1;
+                        endcase // funct3
+`ifdef SCR1_RVE_EXT
+                        if (instr[19] | instr[24])  rve_illegal = 1'b1;
+`endif  // SCR1_RVE_EXT
+                    end // SCR_OPCODE_SUH_CUSTOM_END	    
 
                     SCR1_OPCODE_OP              : begin
                         idu2exu_use_rs1_o         = 1'b1;

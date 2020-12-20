@@ -350,6 +350,7 @@ always_ff @(posedge clk) begin
         exu_queue.wfi_req        <= idu2exu_cmd_i.wfi_req;
         exu_queue.exc_req        <= idu2exu_cmd_i.exc_req;
         exu_queue.exc_code       <= idu2exu_cmd_i.exc_code;
+	exu_queue.store_upper_half <= idu2exu_cmd_i.store_upper_half;
         idu2exu_use_rs1_ff       <= idu2exu_use_rs1_i;
         idu2exu_use_rs2_ff       <= idu2exu_use_rs2_i;
         if (idu2exu_use_rs1_i) begin
@@ -388,10 +389,6 @@ assign exu_queue     = idu2exu_cmd_i;
  // - Performs logical operations (AND(I), OR(I), XOR(I))
  // - Performs address calculation for branch, jump, DMEM load and store and AUIPC
  //   instructions
- // - Performs shift operations
- // - Performs MUL/DIV operations
- //
-//------------------------------------------------------------------------------
 
 // IALU main operands fetch
 //------------------------------------------------------------------------------
@@ -430,7 +427,8 @@ always_comb begin
     if (exu_queue.sum2_op == SCR1_SUM2_OP_REG_IMM) begin
         ialu_addr_op1 = mprf2exu_rs1_data_i;
         ialu_addr_op2 = exu_queue.imm;
-    end else begin
+    end
+    else begin
         ialu_addr_op1 = pc_curr_ff;
         ialu_addr_op2 = exu_queue.imm;
     end
@@ -760,7 +758,7 @@ scr1_pipe_lsu i_lsu(
     .exu2lsu_req_i              (lsu_req                 ),       // Request to LSU
     .exu2lsu_cmd_i              (exu_queue.lsu_cmd       ),       // LSU command
     .exu2lsu_addr_i             (ialu_addr_res           ),       // DMEM address
-    .exu2lsu_sdata_i            (mprf2exu_rs2_data_i     ),       // Data for store to DMEM
+    .exu2lsu_sdata_i            (exu_queue.store_upper_half ? mprf2exu_rs2_data_i[31:16] : mprf2exu_rs2_data_i),       // Data for store to DMEM
     .lsu2exu_rdy_o              (lsu_rdy                 ),       // LSU ready
     .lsu2exu_ldata_o            (lsu_l_data              ),       // Loaded data form DMEM
     .lsu2exu_exc_o              (lsu_exc_req             ),       // LSU exception
@@ -986,13 +984,12 @@ assign exu2csr_mret_update_o = exu2csr_mret_instr_o & csr_access_init;
 //------------------------------------------------------------------------------
 // EXU <-> TDU interface
 //------------------------------------------------------------------------------
-
 // Instruction monitor
 assign exu2tdu_imon_o.vd    = exu_queue_vd;
 assign exu2tdu_imon_o.req   = exu2pipe_instret_o;
 assign exu2tdu_imon_o.addr  = pc_curr_ff;
 
-always_comb begin
+always_comb begin	
     exu2tdu_ibrkpt_ret_o = '0;
     if (exu_queue_vd) begin
         exu2tdu_ibrkpt_ret_o = tdu2exu_ibrkpt_match_i;
